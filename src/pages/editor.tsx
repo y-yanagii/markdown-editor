@@ -4,9 +4,10 @@ import { useStateWithStorage } from '../hooks/use_state_with_storage';
 import * as ReactMarkdown from 'react-markdown';
 import { putMemo } from '../indexeddb/memos';
 import { Button } from '../components/button';
+import { SaveModal } from '../components/save_modal';
 
 // useState関数をReactから取り出す
-// const { useState } = React; // import { useState } from 'react'と同等
+const { useState } = React; // import { useState } from 'react'と同等
 
 const Header = styled.header`
   align-content: center;
@@ -69,16 +70,17 @@ export const Editor: React.FC = () => {
   const [text, setText] = useStateWithStorage('', StorageKey); // useStateの代わりに独自のカスタムフック
 
   // indexedDBの保存処理を呼び出す
-  const saveMemo = (): void => {
-    putMemo('TITLE', text) // 引数にタイトルとエディターの中身を渡す
-  }
+  // const saveMemo = (): void => {
+  //   putMemo('TITLE', text) // 引数にタイトルとエディターの中身を渡す
+  // }
+  const [showModal, setShowModal] = useState(false); // モーダルを表示非表示用
 
   return (
     <>
       <Header>
         Markdown Editor
         <HeaderControl>
-          <Button onClick={saveMemo}>
+          <Button onClick={() => setShowModal(true)}>
             保存する
           </Button>
         </HeaderControl>
@@ -94,6 +96,15 @@ export const Editor: React.FC = () => {
           </ReactMarkdown>
         </Preview>
       </Wrapper>
+      {showModal && (
+        <SaveModal
+          onSave={(title: string): void => {
+            putMemo(title, text)
+            setShowModal(false)
+          }}
+          onCancel={() => setShowModal(false)}
+        />
+      )}
     </>
   )
 }
