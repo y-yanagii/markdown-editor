@@ -1,8 +1,9 @@
 import * as React from 'react';
 import styled from 'styled-components';
+import { useStateWithStorage } from '../hooks/use_state_with_storage';
 
 // useState関数をReactから取り出す
-const { useState } = React; // import { useState } from 'react'と同等
+// const { useState } = React; // import { useState } from 'react'と同等
 
 const Header = styled.header`
   font-size: 1.5rem;
@@ -46,10 +47,14 @@ const Preview = styled.div`
   width: 50vw;
 `
 
+// localStorageでデータの参照・保存に使うキー名を決定（ファイルパス：値の名前）
+const StorageKey = 'pages/editor:text';
+
 // .FCでFunction Component型であることを明示。（TypeScriptの書き方）
 export const Editor: React.FC = () => {
-  const [text, setText] = useState<string>(''); // <TypeScriptで型指定してる>
-
+  // 初期値localStorageから取得
+  // const [text, setText] = useState<string>(localStorage.getItem(StorageKey) || ''); // <TypeScriptで型指定してる>
+  const [text, setText] = useStateWithStorage('', StorageKey); // useStateの代わりに独自のカスタムフック
   return (
     <>
       <Header>
