@@ -5,7 +5,7 @@ module.exports = {
   module: {
     rules: [
       {
-        test: /\.tsx$/, // .tsx$で.tsとxは任意で終わるファイルに対してts-loaderを実行する
+        test: /\.tsx?$/, // .tsx$で.tsとxは任意で終わるファイルに対してts-loaderを実行する
         use: 'ts-loader',
         exclude: /node_modules/, // 除外するファイルを正規表現で指定
       },
