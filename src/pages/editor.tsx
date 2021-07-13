@@ -7,9 +7,12 @@ import { Button } from '../components/button';
 import { SaveModal } from '../components/save_modal';
 import { Link } from 'react-router-dom';
 import { Header } from '../components/header';
+import TestWorker from 'worker-loader!../worker/test.ts'; // worker-loader!でsrc/worker/test.tsの型定義と合わせて、読み込むファイルがWorkerであることを示す。
 
 // useState関数をReactから取り出す
-const { useState } = React; // import { useState } from 'react'と同等
+// const { useState } = React; // import { useState } from 'react'と同等
+const testWorker = new TestWorker(); // Workerインスタンスの生成
+const { useState, useEffect } = React;
 
 const Wrapper = styled.div`
   bottom: 0;
@@ -65,6 +68,18 @@ export const Editor: React.FC<Props> = (props) => {
   //   putMemo('TITLE', text) // 引数にタイトルとエディターの中身を渡す
   // }
   const [showModal, setShowModal] = useState(false); // モーダルを表示非表示用
+
+  // 初回のみWorkerから結果を受け取る
+  useEffect(() => {
+    testWorker.onmessage = (event) => {
+      console.log('Main thread Received:', event.data)
+    }
+  }, [])
+
+  // テキスト変更時にWorkerでテキストデータを送信
+  useEffect(() => {
+    testWorker.postMessage(text)
+  }, [text])
 
   return (
     <>
