@@ -1,17 +1,19 @@
 import * as React from 'react';
 import styled from 'styled-components';
 import { useStateWithStorage } from '../hooks/use_state_with_storage';
-import * as ReactMarkdown from 'react-markdown';
+// import * as ReactMarkdown from 'react-markdown';
 import { putMemo } from '../indexeddb/memos';
 import { Button } from '../components/button';
 import { SaveModal } from '../components/save_modal';
 import { Link } from 'react-router-dom';
 import { Header } from '../components/header';
-import TestWorker from 'worker-loader!../worker/test.ts'; // worker-loader!でsrc/worker/test.tsの型定義と合わせて、読み込むファイルがWorkerであることを示す。
+// import TestWorker from 'worker-loader!../worker/convert_markdown_worker.ts'; // worker-loader!でsrc/worker/test.tsの型定義と合わせて、読み込むファイルがWorkerであることを示す。
+import ConvertMarkdownWorker from 'worker-loader!../worker/convert_markdown_worker.ts'
 
 // useState関数をReactから取り出す
 // const { useState } = React; // import { useState } from 'react'と同等
-const testWorker = new TestWorker(); // Workerインスタンスの生成
+// const testWorker = new TestWorker(); // Workerインスタンスの生成
+const convertMarkdownWorker = new ConvertMarkdownWorker();
 const { useState, useEffect } = React;
 
 const Wrapper = styled.div`
@@ -68,17 +70,22 @@ export const Editor: React.FC<Props> = (props) => {
   //   putMemo('TITLE', text) // 引数にタイトルとエディターの中身を渡す
   // }
   const [showModal, setShowModal] = useState(false); // モーダルを表示非表示用
+  const [html, setHtml] = useState('');
 
   // 初回のみWorkerから結果を受け取る
   useEffect(() => {
-    testWorker.onmessage = (event) => {
-      console.log('Main thread Received:', event.data)
+    // testWorker.onmessage = (event) => {
+    //   console.log('Main thread Received:', event.data)
+    // }
+    convertMarkdownWorker.onmessage = (event) => {
+      setHtml(event.data.html);
     }
   }, [])
 
   // テキスト変更時にWorkerでテキストデータを送信
   useEffect(() => {
-    testWorker.postMessage(text)
+    // testWorker.postMessage(text)
+    convertMarkdownWorker.postMessage(text);
   }, [text])
 
   return (
@@ -100,9 +107,7 @@ export const Editor: React.FC<Props> = (props) => {
           value={text}
         />
         <Preview>
-          <ReactMarkdown>
-            {text}
-          </ReactMarkdown>
+          <div dangerouslySetInnerHTML={{ __html: html }} />
         </Preview>
       </Wrapper>
       {showModal && (
