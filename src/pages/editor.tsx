@@ -49,14 +49,16 @@ const Preview = styled.div`
   width: 50vw;
 `
 
-// localStorageでデータの参照・保存に使うキー名を決定（ファイルパス：値の名前）
-const StorageKey = 'pages/editor:text';
+interface Props {
+  text: string
+  setText: (text:string) => void
+}
 
 // .FCでFunction Component型であることを明示。（TypeScriptの書き方）
-export const Editor: React.FC = () => {
+export const Editor: React.FC<Props> = (props) => {
   // 初期値localStorageから取得
   // const [text, setText] = useState<string>(localStorage.getItem(StorageKey) || ''); // <TypeScriptで型指定してる>
-  const [text, setText] = useStateWithStorage('', StorageKey); // useStateの代わりに独自のカスタムフック
+  const { text, setText } = props;
 
   // indexedDBの保存処理を呼び出す
   // const saveMemo = (): void => {

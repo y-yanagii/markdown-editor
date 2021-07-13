@@ -24,3 +24,10 @@ export const putMemo = async(title: string, text: string): Promise<void> => {
   const datetime = new Date().toISOString(); // 保存する直前で日時取得
   await memos.put({ datetime, title, text }); // DBへ保存処理
 }
+
+// テキスト履歴をリストで取得する関数を定義（戻り値がMemoRecordの配列なのでMemoRecord[]）
+export const getMemos = (): Promise<MemoRecord[]> => {
+  // memosテーブルからデータ取得
+  // datetimeの昇順で取得しreverseで並び順を逆にする。（新しい順に並べ替え）最後にtoArrayで配列に変換
+  return memos.orderBy('datetime').reverse().toArray();
+}
