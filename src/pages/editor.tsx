@@ -5,6 +5,7 @@ import * as ReactMarkdown from 'react-markdown';
 import { putMemo } from '../indexeddb/memos';
 import { Button } from '../components/button';
 import { SaveModal } from '../components/save_modal';
+import { Link } from 'react-router-dom';
 
 // useState関数をReactから取り出す
 const { useState } = React; // import { useState } from 'react'と同等
@@ -83,6 +84,9 @@ export const Editor: React.FC = () => {
           <Button onClick={() => setShowModal(true)}>
             保存する
           </Button>
+          <Link to="/history">
+            履歴を見る
+          </Link>
         </HeaderControl>
       </Header>
       <Wrapper>

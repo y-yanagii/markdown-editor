@@ -2,7 +2,14 @@ import * as React from 'react'
 import { render } from 'react-dom'
 import styled from 'styled-components';
 import { createGlobalStyle } from 'styled-components';
+import {
+  HashRouter as Router,
+  Switch,
+  Route,
+  Redirect,
+} from 'react-router-dom';
 import { Editor } from './pages/editor';
+import { History } from './pages/history';
 
 // styled.HTMLタグ名で生成したいHTMLタグを指定してその後続く``内にCSSを記述すると、そのコンポーネントにスタイルが適用される
 // styled-componentsのcreateGlobalStyle使ってページ全体に適用できるスタイル
@@ -15,7 +22,15 @@ const GlobalStyle = createGlobalStyle`
 const Main = (
   <>
     <GlobalStyle />
-    <Editor />
+    <Router>
+      <Route exact path="/editor">
+        <Editor />
+      </Route>
+      <Route exact path="/history">
+        <History />
+      </Route>
+      <Redirect to="/editor" path="*" />
+    </Router>
   </>
 )
 
