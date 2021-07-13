@@ -1,5 +1,8 @@
 import * as React from 'react';
-import styled from 'styled-components'
+import styled from 'styled-components';
+
+// useState関数をReactから取り出す
+const { useState } = React; // import { useState } from 'react'と同等
 
 const Header = styled.header`
   font-size: 1.5rem;
@@ -45,13 +48,18 @@ const Preview = styled.div`
 
 // .FCでFunction Component型であることを明示。（TypeScriptの書き方）
 export const Editor: React.FC = () => {
+  const [text, setText] = useState<string>(''); // <TypeScriptで型指定してる>
+
   return (
     <>
       <Header>
         Markdown Editor
       </Header>
       <Wrapper>
-        <TextArea value="テキスト入力エリア" />
+        <TextArea
+          onChange={(event) => setText(event.target.value)}
+          value={text}
+        />
         <Preview>プレビューエリア</Preview>
       </Wrapper>
     </>
