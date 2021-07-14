@@ -14,4 +14,4 @@ worker.addEventListener('message', (event) => {
   const html = sanitizeHtml(marked(text), { allowedTags: [...sanitizeHtml.defaults.allowedTags, 'h1', 'h2'] }); // メインスレッドからのテキストデータ（マークダウン）をmarkedでHTML変換し、メインスレッドに結果のHTMLを返却
   // メインスレッドへ処理結果を送信
   worker.postMessage({ html })
-})
+});
